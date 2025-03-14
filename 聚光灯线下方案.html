@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聚光灯 mini GameJam 立项计划</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .btn-hover {
+      transition: all 0.2s ease;
+    }
+    
+    .btn-hover:hover {
+      transform: scale(1.05);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 4px;
+    }
+    
+    .dark ::-webkit-scrollbar-thumb {
+      background: #4a5568;
+    }
+    
+    .timeline-item {
+      position: relative;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: -30px;
+      height: calc(100% - 24px);
+      width: 2px;
+      background-color: #e2e8f0;
+    }
+    
+    .dark .timeline-item::before {
+      background-color: #4a5568;
+    }
+    
+    .timeline-item:last-child::before {
+      display: none;
+    }
+    
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .animate-on-scroll.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="antialiased bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
+  <!-- 顶部导航栏 -->
+  <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-md">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-primary-600 dark:text-primary-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path>
+          </svg>
+          <h1 class="text-xl font-bold">聚光灯 mini GameJam</h1>
+        </div>
+        
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#what-is" class="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium">项目介绍</a>
+          <a href="#why-do" class="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium">可行性分析</a>
+          <a href="#how-to" class="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium">执行计划</a>
+          <a href="#q-and-a" class="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium">常见问题</a>
+        </div>
+        
+        <div class="flex items-center">
+          <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <svg id="dark-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+          
+          <button id="mobile-menu-button" class="md:hidden ml-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 移动端导航菜单 -->
+      <div id="mobile-menu" class="md:hidden hidden pb-4 animate-fade-in">
+        <div class="flex flex-col space-y-3">
+          <a href="#what-is" class="px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">项目介绍</a>
+          <a href="#why-do" class="px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">可行性分析</a>
+          <a href="#how-to" class="px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">执行计划</a>
+          <a href="#q-and-a" class="px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">常见问题</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要内容 -->
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- 英雄区域 -->
+    <section class="mb-16 text-center">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-purple-400">聚光灯 mini GameJam</h1>
+        <p class="text-xl mb-8 text-gray-600 dark:text-gray-300">探索性先锋项目 · TapTap游戏开发者生态建设</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="#how-to" class="btn-hover px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg shadow-md dark:bg-primary-700 dark:hover:bg-primary-600">
+            查看执行计划
+          </a>
+          <a href="#what-is" class="btn-hover px-6 py-3 bg-white hover:bg-gray-100 text-primary-600 font-medium rounded-lg shadow-md border border-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-primary-400 dark:border-gray-700">
+            了解更多
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 执行摘要 -->
+    <section id="executive-summary" class="mb-16 scroll-mt-20 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-file-alt text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">执行摘要</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <!-- 核心数据一览 -->
+          <div class="mb-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">48h</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">开发时长</div>
+              </div>
+              <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50队</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">参赛规模</div>
+              </div>
+              <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">5万</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">预算上限</div>
+              </div>
+              <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">44天</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">筹备周期</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 两栏布局：使用网格布局实现完美对齐 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- 左侧：第一部分 - 项目概述 -->
+            <div>
+              <h3 class="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">项目概述</h3>
+              <p class="mb-4">聚光灯 mini GameJam 是面向在校大学生的48小时线下游戏开发竞赛，作为聚光灯系列赛事的探索性先锋项目，通过小规模验证线下赛事模式。</p>
+            </div>
+            
+            <!-- 右侧：第一部分 - 项目规划 -->
+            <div>
+              <h3 class="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">项目规划</h3>
+              <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                <li class="flex items-start">
+                  <i class="fas fa-calendar text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>时间</strong>: 2025年5月10-13日（48小时开发+评审）</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-map-marker-alt text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>地点</strong>: 杭州（具体场地待定）</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-users text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>规模</strong>: 50支队伍，约200人</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-trophy text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>赛制</strong>: 48小时现场开发，半开放主题</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 第二行布局：核心目标和投资回报 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- 左侧：第二部分 - 核心目标 -->
+            <div>
+              <h3 class="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">核心目标</h3>
+              <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>模式验证</strong>：跑通聚光灯线下赛事流程和参与模式</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>人才挖掘</strong>：建立"赛事挖掘—人才培养"机制</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span><strong>雇主品牌</strong>：在高校阶段植入TapTap开发者生态认知</span>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- 右侧：第二部分 - 投资回报 -->
+            <div>
+              <h3 class="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">投资回报</h3>
+              <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                <li class="flex items-start">
+                  <i class="fas fa-arrow-right text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span>10-15个高质量游戏原型</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-arrow-right text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span>200+高校游戏开发人才直接接触</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-arrow-right text-primary-500 dark:text-primary-400 mt-1 mr-2 w-5 text-center"></i>
+                  <span>为后续全国性赛事积累经验与资源</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- 关键时间节点 -->
+          <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">关键时间节点</h2>
+            
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                <div class="text-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                  <div class="text-lg font-bold text-primary-600 dark:text-primary-400 mb-1">筹备期</div>
+                  <div class="text-base font-medium mb-1">3.17-3.26</div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300">赛制确定、页面开发</div>
+                </div>
+                <div class="text-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                  <div class="text-lg font-bold text-primary-600 dark:text-primary-400 mb-1">宣发招募期</div>
+                  <div class="text-base font-medium mb-1">3.28-4.20</div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300">各渠道宣传、报名</div>
+                </div>
+                <div class="text-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                  <div class="text-lg font-bold text-primary-600 dark:text-primary-400 mb-1">报名确认期</div>
+                  <div class="text-base font-medium mb-1">4.21-4.30</div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300">筛选团队、发邀请函</div>
+                </div>
+                <div class="text-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                  <div class="text-lg font-bold text-primary-600 dark:text-primary-400 mb-1">赛事执行期</div>
+                  <div class="text-base font-medium mb-1">5.10-5.13</div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300">48小时开发+评审</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          <!-- 关键决策点 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 左侧：关键决策点 -->
+            <div>
+              <h3 class="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">关键决策点</h3>
+              <div class="space-y-3">
+                <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div class="font-medium mb-1">场地合作方向</div>
+                  <div class="flex justify-between text-sm">
+                    <span>杭州拱墅游戏管委提供</span>
+                    <span class="text-gray-500">3.26前</span>
+                  </div>
+                </div>
+                <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div class="font-medium mb-1">预算批准</div>
+                  <div class="flex justify-between text-sm">
+                    <span>5万元总预算</span>
+                    <span class="text-gray-500">3.17前</span>
+                  </div>
+                </div>
+                <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div class="font-medium mb-1">传播策略</div>
+                  <div class="flex justify-between text-sm">
+                    <span>校园社团+GameJam群+游戏媒体</span>
+                    <span class="text-gray-500">3.28前</span>
+                  </div>
+                </div>
+                <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div class="font-medium mb-1">评委邀请</div>
+                  <div class="flex justify-between text-sm">
+                    <span>TapTap内部+高校老师+行业嘉宾</span>
+                    <span class="text-gray-500">4.30前</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 右侧：风险与收益 -->
+            <div>
+              <h3 class="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">风险与收益</h3>
+              <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h4 class="font-medium mb-2">主要风险</h4>
+                <ul class="space-y-1 text-sm">
+                  <li class="flex items-start">
+                    <i class="fas fa-circle text-xs text-red-500 dark:text-red-400 mt-1 mr-2"></i>
+                    <span>报名人数不足，影响赛事规模</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-circle text-xs text-red-500 dark:text-red-400 mt-1 mr-2"></i>
+                    <span>场地合作不确定，可能增加成本</span>
+                  </li>
+                </ul>
+                
+                <h4 class="font-medium mb-2 mt-4">长期收益</h4>
+                <ul class="space-y-1 text-sm">
+                  <li class="flex items-start">
+                    <i class="fas fa-circle text-xs text-green-500 dark:text-green-400 mt-1 mr-2"></i>
+                    <span>发掘优质游戏项目，可直接孵化上线</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-circle text-xs text-green-500 dark:text-green-400 mt-1 mr-2"></i>
+                    <span>建立高校合作关系，为人才招聘铺路</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-circle text-xs text-green-500 dark:text-green-400 mt-1 mr-2"></i>
+                    <span>形成可复制的赛事模式，扩展至全国</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 项目介绍 -->
+    <section id="what-is" class="mb-16 scroll-mt-20 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-lightbulb text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">什么是聚光灯 mini GameJam?</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <p class="mb-4">聚光灯 mini GameJam 是聚光灯 GameJam 系列赛事的<span class="font-semibold text-primary-600 dark:text-primary-400">探索性先锋项目</span>，简而言之就是往届聚光灯 GJ 的简化版，面向群体是在校大学生。</p>
+          
+          <h3 class="text-xl font-semibold mb-3 mt-6">核心目标</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div class="text-primary-500 dark:text-primary-400 mb-2">
+                <i class="fas fa-check-circle text-lg"></i>
+              </div>
+              <h4 class="font-medium mb-2">模式验证</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">通过单一群体的线下 48 小时赛事运营，跑通聚光灯线下赛事流程和参与模式</p>
+            </div>
+            
+            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div class="text-primary-500 dark:text-primary-400 mb-2">
+                <i class="fas fa-users text-lg"></i>
+              </div>
+              <h4 class="font-medium mb-2">人才挖掘</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">挖掘各大高校的潜在人才，建立长效的「赛事挖掘——人才培养」机制</p>
+            </div>
+            
+            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div class="text-primary-500 dark:text-primary-400 mb-2">
+                <i class="fas fa-building text-lg"></i>
+              </div>
+              <h4 class="font-medium mb-2">雇主品牌</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">以扶持创意/精品游戏为触点，完成 TapTap 开发者生态在高校阶段的认知植入</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 可行性分析 -->
+    <section id="why-do" class="mb-16 scroll-mt-20 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-chart-line text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">为什么可以做聚光灯 mini GameJam?</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <p class="mb-6">根据前置调研显示，对 GameJam 感兴趣的人群约有<span class="font-semibold text-primary-600 dark:text-primary-400"> 80% 是 18-25 岁区间</span>，大部分是在校学生。我们在聚光灯赛事中积累了部分业内资源，可以用于新一年度的 GameJam 尝试。</p>
+          
+          <p class="mb-4">同时，近年来线下赛事数量略显匮乏，对比市面上流行的赛事，TapTap 有适合介入的空间。</p>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+              <thead>
+                <tr class="bg-gray-50 dark:bg-gray-700">
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">项目方</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">如何选人</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">线下情况</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">时间跨度</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr class="bg-white dark:bg-gray-800">
+                  <td class="px-4 py-3 text-sm">吉比特未来游戏制作人大赛</td>
+                  <td class="px-4 py-3 text-sm">只接受学生报名，线上初赛+线下48H</td>
+                  <td class="px-4 py-3 text-sm">晋级 10 组，单组上限 5 人，整体不超过50人。全员包机酒</td>
+                  <td class="px-4 py-3 text-sm">3 月宣发，7 月决赛，共 5 个月</td>
+                </tr>
+                <tr class="bg-white dark:bg-gray-800">
+                  <td class="px-4 py-3 text-sm">IGG G 星计划</td>
+                  <td class="px-4 py-3 text-sm">只接受学生报名，严格的笔试+面试流程</td>
+                  <td class="px-4 py-3 text-sm">选 100 人进入线下进行一个月的开发，按照实习生方式发放工资（8k）</td>
+                  <td class="px-4 py-3 text-sm">3 月宣发，7 月比赛，共 5 个月</td>
+                </tr>
+                <tr class="bg-white dark:bg-gray-800">
+                  <td class="px-4 py-3 text-sm">朝夕光年游戏开发挑战赛</td>
+                  <td class="px-4 py-3 text-sm">只接受学生报名，提交团队简历</td>
+                  <td class="px-4 py-3 text-sm">超百人，全员包机酒（21 年字节的情况，资金比较富裕）</td>
+                  <td class="px-4 py-3 text-sm">6 月宣发，7 月比赛，共 2 个月</td>
+                </tr>
+                <tr class="bg-white dark:bg-gray-800">
+                  <td class="px-4 py-3 text-sm">2025 Global GameJam</td>
+                  <td class="px-4 py-3 text-sm">分城市多站点，自由组队无限制</td>
+                  <td class="px-4 py-3 text-sm">单个站点人数基本过百，仅提供场地</td>
+                  <td class="px-4 py-3 text-sm">12 月宣发，1 月比赛，共 2 个月</td>
+                </tr>
+                <tr class="bg-white dark:bg-gray-800">
+                  <td class="px-4 py-3 text-sm">心动往届线下独立营</td>
+                  <td class="px-4 py-3 text-sm">分学生和社会团体，提交简历报名</td>
+                  <td class="px-4 py-3 text-sm">百人规模，学生单独提供住宿</td>
+                  <td class="px-4 py-3 text-sm">10 月宣发，12 月比赛，共 3 个月</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <p class="mt-6 text-gray-600 dark:text-gray-300">从上表可以很明显地看出，除了 GGJ，其中绝大部分赛事历经时间长，整体「过重」，学生参与心理负担大，我们有很足的调整空间。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 调研结论 -->
+    <section class="mb-16 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-search text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">调研与访谈核心结论</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">样本数量：228</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mr-3">
+                  <i class="fas fa-user-friends"></i>
+                </div>
+                <div>
+                  <p>新兵和老油条呈28法则态，<strong>70%</strong> 是 1-3 年经验开发者，<strong>80%</strong> 的年龄在 18-25 岁，一半以上从未参加/仅参与过 1 次，资深开发者较少</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 mr-3">
+                  <i class="fas fa-laptop-house"></i>
+                </div>
+                <div>
+                  <p><strong>80%</strong> 以上的用户想参与线上赛事，其中有 <strong>6</strong> 成的用户是因为交通原因不愿意参与线下，21 天线上的模式是最受欢迎的</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 mr-3">
+                  <i class="fas fa-thumbs-down"></i>
+                </div>
+                <div>
+                  <p>普遍不喜欢 C 端拉票机制</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300 mr-3">
+                  <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div>
+                  <p>奖金是吸引参赛的钩子，实际上多数开发者最后没拿到钱，但也觉得收获满满</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300 mr-3">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div>
+                  <p>新人最希望得到行业大佬指导，资深开发者最想要Tap扶持&流量</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300 mr-3">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <p>热门开发者分布城市：广东＞上海＞四川＞浙江，约 <strong>60%</strong> 愿意就近/跨城参与</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300 mr-3">
+                  <i class="fas fa-comments"></i>
+                </div>
+                <div>
+                  <p>对于线下比赛，最想要有自由社交、行业交流的机会</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 执行计划 -->
+    <section id="how-to" class="mb-16 scroll-mt-20 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-tasks text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">我们准备怎么做？</h2>
+        </div>
+        
+        <!-- 赛事框架设计 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <h3 class="text-xl font-semibold mb-6 text-primary-600 dark:text-primary-400">赛事框架设计</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+              <h4 class="font-medium mb-3 flex items-center">
+                <span class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center mr-2">
+                  <i class="fas fa-gavel"></i>
+                </span>
+                赛制
+              </h4>
+              <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                  <span>只接受学生报名，提交团队简历</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                  <span>3-5人团队，50组规模</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                  <span>48小时现场开发，半开放主题当场公布</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-info-circle text-gray-400 mt-1 mr-2"></i>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">参考GGJ，公认的线下比赛模式</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+              <h4 class="font-medium mb-3 flex items-center">
+                <span class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center mr-2">
+                  <i class="fas fa-star"></i>
+                </span>
+                评审机制
+              </h4>
+              <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                  <span>评审维度：创意(50%)、视觉(10%)、音效(10%)、完成度(30%)</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                  <span>完赛后先进行玩家互评，选取10组游戏送评委</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                  <span>前10组游戏上台演讲，单个游戏10分钟讲解</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-info-circle text-gray-400 mt-1 mr-2"></i>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">先玩家互评，有价值的作品上台请评委点评</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+              <h4 class="font-medium mb-3 flex items-center">
+                <span class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center mr-2">
+                  <i class="fas fa-award"></i>
+                </span>
+                奖项设置
+              </h4>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">业内知名的GGJ的赛事最开始就是完全没有奖金的。</p>
+              <p class="text-gray-600 dark:text-gray-300">根据前置调研，大学生群体更多的诉求在于「交流学习、大佬指导」，且本次比赛定位线下模式跑通，可以考虑不颁发物质奖励。</p>
+            </div>
+          </div>
+          
+          <!-- 场地设备 -->
+          <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">场地与设备</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+                <h4 class="font-medium mb-3 flex items-center">
+                  <i class="fas fa-map-marked-alt text-primary-500 dark:text-primary-400 mr-2"></i>
+                  场地
+                </h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>需要500㎡办公空间，划分为开发区、休息区、路演区</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>开发区至少有50张以上大桌面，200个工位</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>休息区设置零食饮料补给</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>路演区至少需要一个屏幕、评委坐席</span>
+                  </li>
+                </ul>
+                <div class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                  <p>共三套方案：</p>
+                  <ul class="pl-4 mt-1 space-y-1">
+                    <li>• 和学校合办，在校区内场地举行</li>
+                    <li>• 借用开拓芯场地举办</li>
+                    <li>• 其他商务途径取得的免费场地</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+                <h4 class="font-medium mb-3 flex items-center">
+                  <i class="fas fa-users text-primary-500 dark:text-primary-400 mr-2"></i>
+                  评委与驻场
+                </h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>需要5位评委和6位驻场工作人员</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>TapTap编辑</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>商务同事</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>高校老师（如果有）</span>
+                  </li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">第一次办面向学生的赛事，对学生+作品的质量没有太大的预期，尽量不寻求过高的名头，避免希望落空。</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 宣发策略 -->
+          <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">宣发策略</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+                <h4 class="font-medium mb-3 flex items-center">
+                  <i class="fas fa-bullhorn text-primary-500 dark:text-primary-400 mr-2"></i>
+                  核心宣发点
+                </h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>国内顶级游戏平台推出的精品赛事</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>最接近游戏行业的交流机会，近距离接触行业大咖</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>主打人人都能做游戏</span>
+                  </li>
+                </ul>
+                <h5 class="font-medium mt-4 mb-2">传播目的</h5>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>吸引江浙沪地区的高校学生参与</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>在学生心中树立起TapTap和精品游戏强绑定的印象</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+                <h4 class="font-medium mb-3 flex items-center">
+                  <i class="fas fa-share-alt text-primary-500 dark:text-primary-400 mr-2"></i>
+                  传播渠道选择
+                </h4>
+                <h5 class="font-medium mb-2">核心渠道</h5>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>各大校园的社团群、公众号</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>各大GameJam群，至少10个千人大群</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>游戏媒体公众号（例如触乐、机核）</span>
+                  </li>
+                </ul>
+                <h5 class="font-medium mt-4 mb-2">次级传播</h5>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>TapTap站内</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>微博、小红书</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 物料 -->
+          <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">宣发物料</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+                <h4 class="font-medium mb-3 flex items-center">
+                  <i class="fas fa-desktop text-primary-500 dark:text-primary-400 mr-2"></i>
+                  线上物料
+                </h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>宣发H5</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>招募手册</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-5">
+                <h4 class="font-medium mb-3 flex items-center">
+                  <i class="fas fa-print text-primary-500 dark:text-primary-400 mr-2"></i>
+                  线下物料
+                </h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>易拉宝</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>赛事手册</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-primary-500 dark:text-primary-400 mt-1 mr-2"></i>
+                    <span>横幅</span>
+                  </li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">简单来说就是H5和线下的宣传门头，线下的物料预期是线下合作场地能够合作完成</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 项目预算 -->
+          <div>
+            <h3 class="text-xl font-semibold mb-4">项目预算</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                <thead>
+                  <tr class="bg-gray-50 dark:bg-gray-700">
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">类别</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">解决方案</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">成本推算</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr class="bg-white dark:bg-gray-800">
+                    <td class="px-4 py-3 text-sm">赛事奖励</td>
+                    <td class="px-4 py-3 text-sm">不发放金钱奖励，复用聚光灯奖模板，印制对应奖状</td>
+                    <td class="px-4 py-3 text-sm">2k</td>
+                  </tr>
+                  <tr class="bg-white dark:bg-gray-800">
+                    <td class="px-4 py-3 text-sm">市场费用</td>
+                    <td class="px-4 py-3 text-sm">线下宣传物料/场地布置费用</td>
+                    <td class="px-4 py-3 text-sm">暂定2万</td>
+                  </tr>
+                  <tr class="bg-white dark:bg-gray-800">
+                    <td class="px-4 py-3 text-sm">赛事保障</td>
+                    <td class="px-4 py-3 text-sm">【可选项】以200人计，单人50元零食/饮料补给</td>
+                    <td class="px-4 py-3 text-sm">【可选项】1万</td>
+                  </tr>
+                  <tr class="bg-white dark:bg-gray-800">
+                    <td class="px-4 py-3 text-sm">劳务费用</td>
+                    <td class="px-4 py-3 text-sm">招募大学生志愿者驻场巡逻，解答日常疑问/预防事故，4人，单人500一天，共计2天</td>
+                    <td class="px-4 py-3 text-sm">4k</td>
+                  </tr>
+                  <tr class="bg-white dark:bg-gray-800 font-medium">
+                    <td class="px-4 py-3 text-sm">合计</td>
+                    <td class="px-4 py-3 text-sm"></td>
+                    <td class="px-4 py-3 text-sm">5万以内</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 赛事流程 -->
+    <section class="mb-16 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-calendar-alt text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">赛事流程</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <div class="relative pl-10 ml-5">
+            <div class="flex flex-col space-y-10">
+              <!-- 筹备期 -->
+              <div class="timeline-item">
+                <div class="absolute -left-10 mt-1 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="text-lg font-medium mb-4">赛前准备（44天，28个工作日）</h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <thead>
+                      <tr class="bg-gray-50 dark:bg-gray-700">
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">阶段</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">时间</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">项目</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">交付内容</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">责任方</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm" rowspan="4">筹备期</td>
+                        <td class="px-4 py-2 text-sm">3.17-3.18</td>
+                        <td class="px-4 py-2 text-sm">明确赛制、奖项（如有）、评分规则</td>
+                        <td class="px-4 py-2 text-sm">赛事规则文档+FAQ手册</td>
+                        <td class="px-4 py-2 text-sm">产运</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">3.19-3.26</td>
+                        <td class="px-4 py-2 text-sm">活动页面设计+开发</td>
+                        <td class="px-4 py-2 text-sm">H5报名页面（主体是赛事图+报名按钮）</td>
+                        <td class="px-4 py-2 text-sm">设计+研发</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">3.28-5.6</td>
+                        <td class="px-4 py-2 text-sm">评委邀请</td>
+                        <td class="px-4 py-2 text-sm">至少5位评委</td>
+                        <td class="px-4 py-2 text-sm">商务</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">5.6-5.9</td>
+                        <td class="px-4 py-2 text-sm">线下场地确认+布置</td>
+                        <td class="px-4 py-2 text-sm">确认座位布置合理</td>
+                        <td class="px-4 py-2 text-sm">商务/产运</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">报名期</td>
+                        <td class="px-4 py-2 text-sm">3.28-4.20</td>
+                        <td class="px-4 py-2 text-sm">宣发+学生陆续报名</td>
+                        <td class="px-4 py-2 text-sm">地方政府、高校社团渠道确定宣发内容</td>
+                        <td class="px-4 py-2 text-sm">商务/产运</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">报名确认期</td>
+                        <td class="px-4 py-2 text-sm">4.21-4.30</td>
+                        <td class="px-4 py-2 text-sm">报名信息确认</td>
+                        <td class="px-4 py-2 text-sm">筛选报名团队，发送邀请函，加群管理</td>
+                        <td class="px-4 py-2 text-sm">产运</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <!-- 赛事期 -->
+              <div class="timeline-item">
+                <div class="absolute -left-10 mt-1 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center">
+                  <i class="fas fa-gamepad"></i>
+                </div>
+                <h3 class="text-lg font-medium mb-4">赛事期：5.10-5.13（3天）</h3>
+                
+                <!-- 第一天 -->
+                <div class="mb-6">
+                  <h4 class="font-medium mb-2 text-primary-600 dark:text-primary-400">第一天</h4>
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700">
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">时间</th>
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">流程主题</th>
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">备注</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">8:00-10:00</td>
+                          <td class="px-4 py-2 text-sm">签到&交流</td>
+                          <td class="px-4 py-2 text-sm">需要2名工作人员签到</td>
+                        </tr>
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">10:00-11:00</td>
+                          <td class="px-4 py-2 text-sm">流程宣讲、主题公布</td>
+                          <td class="px-4 py-2 text-sm">需要1位主持人</td>
+                        </tr>
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">15:00-19:00</td>
+                          <td class="px-4 py-2 text-sm">导师巡回指导</td>
+                          <td class="px-4 py-2 text-sm">需要邀请3位指导老师</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                <!-- 第二天 -->
+                <div class="mb-6">
+                  <h4 class="font-medium mb-2 text-primary-600 dark:text-primary-400">第二天</h4>
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700">
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">时间</th>
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">流程主题</th>
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">备注</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">13:00-19:00</td>
+                          <td class="px-4 py-2 text-sm">导师巡回指导</td>
+                          <td class="px-4 py-2 text-sm">需要邀请3位指导老师</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                <!-- 第三天 -->
+                <div>
+                  <h4 class="font-medium mb-2 text-primary-600 dark:text-primary-400">第三天</h4>
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700">
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">时间</th>
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">流程主题</th>
+                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">备注</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">11:00-13:00</td>
+                          <td class="px-4 py-2 text-sm">互相试玩打分，取排名前十</td>
+                          <td class="px-4 py-2 text-sm">需要2名工作人员讲解打分表</td>
+                        </tr>
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">13:00-17:00</td>
+                          <td class="px-4 py-2 text-sm">评委点评，打分</td>
+                          <td class="px-4 py-2 text-sm">需要5位评委</td>
+                        </tr>
+                        <tr class="bg-white dark:bg-gray-800">
+                          <td class="px-4 py-2 text-sm">17:00-19:00</td>
+                          <td class="px-4 py-2 text-sm">互相交流，散场</td>
+                          <td class="px-4 py-2 text-sm">清场结束</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 合作需求 -->
+              <div class="timeline-item">
+                <div class="absolute -left-10 mt-1 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 flex items-center justify-center">
+                  <i class="fas fa-handshake"></i>
+                </div>
+                <h3 class="text-lg font-medium mb-4">希望对方提供协助的项目</h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <thead>
+                      <tr class="bg-gray-50 dark:bg-gray-700">
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">项目</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">具体内容</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">院校宣传</td>
+                        <td class="px-4 py-2 text-sm">当地高校的线上线下宣传</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">场地支持</td>
+                        <td class="px-4 py-2 text-sm">能容纳300人场地的工区<br>20台高性能电脑应急<br>大屏幕、评奖台</td>
+                      </tr>
+                      <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-4 py-2 text-sm">导师支持</td>
+                        <td class="px-4 py-2 text-sm">行业专家驻场指导<br>希望能有2-3名行业内指导老师当评委</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section id="q-and-a" class="mb-16 scroll-mt-20 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300 mr-4">
+            <i class="fas fa-question-circle text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">常见问题</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 card-hover">
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-lg font-medium mb-2 flex items-center">
+                <i class="fas fa-question-circle text-primary-500 dark:text-primary-400 mr-2"></i>
+                简历是如何筛选的？
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 ml-7">遵循先到先得的大方向原则，把收集到的简历分别给到3家AI筛选，按照评分顺次录取。</p>
+              <div class="ml-7 mt-3 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-sm">
+                <h4 class="font-medium mb-2">AI筛选评估维度</h4>
+                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li>• 技术实现能力（0-30分）</li>
+                  <li>• 团队协作适配（0-20分）</li>
+                  <li>• 创意表达潜力（0-15分）</li>
+                  <li>• 提交的项目完成度（0-25分）</li>
+                  <li>• 往届参赛经历（0-10分）</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium mb-2 flex items-center">
+                <i class="fas fa-question-circle text-primary-500 dark:text-primary-400 mr-2"></i>
+                人不够/人爆满怎么办？
+              </h3>
+              <div class="ml-7 space-y-3">
+                <p class="text-gray-600 dark:text-gray-300"><strong>人不够的情况：</strong>每日监测报名人数，在第一周结束未收到30份简历视为报名人数可能不够，立即重新联系宣发渠道，再推广一波。</p>
+                <p class="text-gray-600 dark:text-gray-300"><strong>人爆满的情况：</strong>对外宣布根据团队简历质量、先到先得。同时验证模式可行，后续地区站可以升级规模。</p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium mb-2 flex items-center">
+                <i class="fas fa-question-circle text-primary-500 dark:text-primary-400 mr-2"></i>
+                大学生志愿者招募是怎么样的？
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 ml-7">希望依托对方合作的学校来确定大学生志愿者。如果他们没有固定的志愿者渠道，则在宣传过程中招募「大学生志愿者」，需要进行岗前培训，核心是确保在场人员安全。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 未解决问题 -->
+    <section class="mb-16 animate-on-scroll">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 mr-4">
+            <i class="fas fa-exclamation-circle text-2xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold">未解决的问题</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover">
+          <ul class="space-y-4 text-gray-600 dark:text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-exclamation-circle text-red-500 mt-1 mr-2"></i>
+              <span>1. 使用哪方的场地来办？合作形式是什么？有多深入？</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-exclamation-circle text-red-500 mt-1 mr-2"></i>
+              <span>2. 宣传渠道上，预设的渠道（公众号/学生社群/政府合作）是否可以帮助宣传</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-white dark:bg-gray-800 shadow-md py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-8">
+          <div class="mb-4 md:mb-0">
+            <div class="flex items-center">
+              <svg class="w-8 h-8 text-primary-600 dark:text-primary-400 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path>
+              </svg>
+              <h2 class="text-lg font-semibold">聚光灯 mini GameJam</h2>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">探索性先锋项目 · TapTap游戏开发者生态建设</p>
+          </div>
+          
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">作者：<span class="font-medium">远夏/秦风</span></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">© 2025 TapTap. 保留所有权利</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 返回顶部按钮 -->
+  <button id="back-to-top" class="fixed bottom-6 right-6 p-3 rounded-full bg-primary-600 text-white shadow-lg opacity-0 transition-opacity duration-300 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:bg-primary-700 dark:hover:bg-primary-600 dark:focus:ring-offset-gray-800">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+    </svg>
+  </button>
+
+  <!-- JavaScript -->
+  <script>
+    // 深色模式切换
+    const themeToggle = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('dark-icon');
+    const lightIcon = document.getElementById('light-icon');
+    
+    // 检查系统偏好
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+      lightIcon.classList.remove('hidden');
+    } else {
+      darkIcon.classList.remove('hidden');
+    }
+    
+    // 检查本地存储
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      lightIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.remove('dark');
+      darkIcon.classList.remove('hidden');
+    }
+    
+    themeToggle.addEventListener('click', function() {
+      document.documentElement.classList.toggle('dark');
+      
+      if (document.documentElement.classList.contains('dark')) {
+        localStorage.theme = 'dark';
+        darkIcon.classList.add('hidden');
+        lightIcon.classList.remove('hidden');
+      } else {
+        localStorage.theme = 'light';
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+      }
+    });
+    
+    // 移动端菜单
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // 点击链接关闭移动菜单
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+    
+    // 滚动动画
+    const animateOnScroll = function() {
+      const elements = document.querySelectorAll('.animate-on-scroll');
+      elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (elementPosition < windowHeight - 100) {
+          element.classList.add('show');
+        }
+      });
+    };
+    
+    // 返回顶部按钮
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    const scrollFunction = function() {
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        backToTopButton.style.opacity = '1';
+      } else {
+        backToTopButton.style.opacity = '0';
+      }
+      
+      animateOnScroll();
+    };
+    
+    window.addEventListener('scroll', scrollFunction);
+    
+    backToTopButton.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // 初始加载时运行一次动画检查
+    window.addEventListener('load', animateOnScroll);
+    
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
